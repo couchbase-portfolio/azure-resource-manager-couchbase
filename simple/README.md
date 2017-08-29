@@ -1,14 +1,43 @@
 # simple
 
-This ARM template deploys a Couchbase Enterprise cluster to Azure.  This includes both [Couchbase Server](https://www.couchbase.com/products/server) and [Sync Gateway](https://developer.couchbase.com/documentation/mobile/current/guides/sync-gateway/index.html).  The template provisions a virtual network, a VMSS, Managed Disks with Premium Storage and public IPs with a DNS record per node.  It also sets up a network security group.
+This is an Azure Resource Manager (ARM) template that installs Couchbase Enterprise.  You can run it from the  CLI or using the [Azure Portal](https://portal.azure.com).  
 
-## Deployment
+The template provisions a virtual network, VM Scale Sets (VMSS), Managed Disks with Premium Storage and public IPs with a DNS record per node.  It also sets up a network security group.
 
-[deploy.sh](deploy.sh) has commands for both the 1 and 2 version of the Azure CLI.  [deploy.ps1](deploy.ps1) contains equivalent Azure PowerShell commands.  You can also deploy or inspect the template by clicking the buttons below:
+## Important Note
 
-<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fcouchbase-partners%2Fazure-resource-manager-couchbase%2Fmaster%2Fsimple%2FmainTemplate.json" target="_blank"><img src="http://azuredeploy.net/deploybutton.png"/></a>
-<a href="http://armviz.io/#/?load=https%3A%2F%2Fraw.githubusercontent.com%2Fcouchbase-partners%2Fazure-resource-manager-couchbase%2Fmaster%2Fsimple%2FmainTemplate.json" target="_blank"><img src="http://armviz.io/visualizebutton.png"/></a>
+This template uses two Azure Marketplace VMs.  To deploy in your Azure subscription you must first deploy the template once from the Azure Portal [here](https://azuremarketplace.microsoft.com/en-us/marketplace/apps/couchbase.couchbase-enterprise).
 
-Deployment typically takes less than five minutes.  When complete Couchbase administrator will be available on port 8091 of any node.  The URL to access the admin on vm0 is output as the nodeAdminURL.  
+If you don't follow this step, you'll likely see an error like this:
 
-The username and password entered for the deployment will be used for both the VM administrator credentials as well as the Couchbase administrator.
+    error:   MarketplacePurchaseEligibilityFailed : Marketplace purchase eligibilty check returned errors. See inner errors for details.
+
+## Environment Setup
+
+You will need an Azure account.  If using the hourly-pricing option that account must be configured for pay as you go.  If using BYOL then any account will work.
+
+First we need to install and configure the Azure CLI.  The Azure CLI comes in both 1.0 and 2.0 versions.  For these scripts we are using the 1.0 as the 2.0 has immature logging and output.  You can install the 1.0 CLI by following the instructions [here](https://docs.microsoft.com/en-us/azure/cli-install-nodejs).
+
+You can confirm the CLI is working properly by running:
+
+    azure group list
+
+Then you'll want to clone this repo.  You can do that with the command:
+
+    git clone https://github.com/couchbase-partners/azure-resource-manager-couchbase.git
+    cd azure-resource-manager-couchbase
+    cd simple
+
+## Creating a Deployment
+
+[deploy.sh](deploy.sh) is a helper script to create a deployment.  Take a look at it, the [mainTemplateParameters.json](mainTemplateParameters.json) and modify any parameters.  Then run it as:
+
+    ./deploy.sh <RESOURCE_GROUP_NAME>
+
+When complete the template prints the URLs to access Couchbase Server and Couchbase Sync Gateway.
+
+## Deleting a Deployment
+
+To delete your deployment you can either run the command below or use the GUI in the [Azure Portal](https://portal.azure.com).
+
+    azure group delete <RESOURCE_GROUP_NAME>

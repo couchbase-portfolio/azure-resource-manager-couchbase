@@ -30,7 +30,7 @@
       "apiVersion": "2017-03-30",
       "plan": {
         "publisher": "couchbase",
-        "product": "couchbase-server-enterprise",
+        "product": "couchbase-sync-gateway-enterprise",
         "name": "byol"
       },
       "sku": {
@@ -50,7 +50,7 @@
             },
             "imageReference": {
               "publisher": "couchbase",
-              "offer": "couchbase-server-enterprise",
+              "offer": "couchbase-sync-gateway-enterprise",
               "sku": "byol",
               "version": "latest"
             }
@@ -76,7 +76,7 @@
                         "publicipaddressconfiguration": {
                           "name": "public",
                           "properties": {
-                            "idleTimeoutInMinutes": 15,
+                            "idleTimeoutInMinutes": 30,
                             "dnsSettings": {
                               "domainNameLabel": "[concat('syncgateway-', parameters('uniqueString'))]"
                             }
@@ -100,12 +100,10 @@
                   "autoUpgradeMinorVersion": true,
                   "settings": {
                     "fileUris": [
-                      "[concat(parameters('extensionUrl'), 'adjust_tcp_keepalive.sh')]",
-                      "[concat(parameters('extensionUrl'), 'installSyncGateway.sh')]",
-                      "[concat(parameters('extensionUrl'), 'configureSyncGateway.sh')]",
-                      "[concat(parameters('extensionUrl'), 'syncGateway.sh')]"
+                      "[concat(parameters('extensionUrl'), 'syncGateway.sh')]",
+                      "[concat(parameters('extensionUrl'), 'util.sh')]"
                     ],
-                    "commandToExecute": "[concat('bash syncGateway.sh ', parameters('adminUsername'), ' ', parameters('adminPassword'), ' ', parameters('uniqueString'), ' ', resourceGroup().location)]"
+                    "commandToExecute": "[concat('bash syncGateway.sh ', parameters('uniqueString'), ' ', resourceGroup().location)]"
                   }
                 }
               }
